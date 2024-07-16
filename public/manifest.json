@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "AWS transcribe and translate",
+  "version": "0.0.1",
+  "content_scripts": [
+    {
+      "matches": ["https://docs.amplify.aws/"],
+      "run_at": "document_end",
+      "js": [ "service-worker.js" ],
+      "css": [],
+      "media": []
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "permissions": ["tabCapture", "sidePanel", "tabs"],
+  "action": {
+    "default_icon": "icons/not-recording.png"
+  },
+  "minimum_chrome_version": "116",
+  "side_panel": {
+    "default_path": "index.html"
+  }
+}

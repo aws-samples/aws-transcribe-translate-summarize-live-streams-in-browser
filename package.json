@@ -1,0 +1,57 @@
+{
+  "name": "aws_real_time_meeting_extension",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@aws-amplify/ui-react": "6.1.12",
+    "@aws-sdk/client-transcribe-streaming": "3.583.0",
+    "@aws-sdk/client-translate": "3.583.0",
+    "@aws-sdk/credential-providers": "3.583.0",
+    "@cloudscape-design/components": "3.0.640",
+    "@testing-library/jest-dom": "6.4.5",
+    "@testing-library/react": "15.0.7",
+    "@testing-library/user-event": "14.5.2",
+    "aws-amplify": "6.3.4",
+    "axios": "1.7.2",
+    "buffer": "6.0.3",
+    "microphone-stream": "6.0.1",
+    "process": "0.11.10",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "tiny-glob": "0.2.9",
+    "uuid": "9.0.1",
+    "web-vitals": "4.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "prebuild": "node ./scripts/prebuild.js",
+    "build": "npm-run-all build:*",
+    "build:app": "INLINE_RUNTIME_CHUNK=false react-scripts build",
+    "postbuild": "node ./scripts/postbuild.js",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "npm-run-all": "4.1.5",
+    "react-scripts": "5.0.1",
+    "webpack-cli": "5.1.4"
+  }
+}
