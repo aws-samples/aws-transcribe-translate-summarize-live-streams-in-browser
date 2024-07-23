@@ -18,7 +18,7 @@ In this repository, WAF is not enabled, but it is highly recommended to enable i
 * Open `cdk/config.json` file and populate the configuration variables.
 ```json
 {
-  "prefix": "aaa1234", // A random prefix
+  "prefix": "aaa1234", // A random prefix to differentiate the deploy
   "aws_region": "us-west-2", // The AWS Region where you want to deploy the project
   "bedrock_region": "us-west-2", // The AWS Region where you have access to Amazon Bedrock models
   "bucket_name": "summarization-test" // The name you want to give to the Amazon S3 Bucket where conversation summaries will be stored. The name will be automatically suffixed with a random string.
