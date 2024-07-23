@@ -6,6 +6,7 @@ from helpers import retrieve_complete_transcription, generate_prompt, generate_s
 
 output_bucket = os.environ['BUCKET_S3']
 region = os.environ['BEDROCK_REGION']
+bedrock_model_id = os.environ['BEDROCK_MODEL_ID']
 
 s3_client = boto3.client('s3')
 bedrock_runtime = boto3.client('bedrock-runtime', config=Config(
@@ -16,7 +17,6 @@ bedrock_client = boto3.client('bedrock', config=Config(
 ))
 
 claude3_id = "anthropic.claude-3-sonnet-20240229-v1:0"
-claude2_id = "anthropic.claude-v2:1"
 
 def lambda_handler(event, context):
     body = json.loads(event['body'])
@@ -49,14 +49,15 @@ def lambda_handler(event, context):
 
     # Call the ListFoundationalModels API
     foundational_models = bedrock_client.list_foundation_models()
-    # Check if Claude 3 is available in the region
-    claude3_available = False
+    # Check if the model is available in the region, otherwise use Claude 3
+    print("model")
+    model_available = False
     for model in foundational_models['modelSummaries']:
-        if model['modelId'] == claude3_id:
-            claude3_available = True
+        if model['modelId'] == bedrock_model_id:
+            model_available = True
             break
         
-    selected_model = claude3_id if claude3_available else claude2_id
+    selected_model = bedrock_model_id if model_available else claude3_id
 
     transcription = retrieve_complete_transcription(output_bucket, output_key, new_content, type_of_audio, s3_client)
     summary = generate_summary(transcription, bedrock_runtime, selected_model)

@@ -1,7 +1,7 @@
 import * as aws_lambda from 'aws-cdk-lib/aws-lambda';
 import * as iam from 'aws-cdk-lib/aws-iam';
 import { Construct } from "constructs";
-import { CfnOutput, Duration } from 'aws-cdk-lib';
+import { Duration } from 'aws-cdk-lib';
 
 export interface LambdaProps {
   readonly lambdaName: string;
@@ -11,6 +11,7 @@ export interface LambdaProps {
   readonly bucketName: string;
   readonly bedrockRegion: string | null;
   readonly prefix: string;
+  readonly bedrockModelID: string | null;
 }
 
 const defaultProps: Partial<LambdaProps> = {};
@@ -32,7 +33,8 @@ export class LambdaConstruct extends Construct {
       role: props.iamRole,
       environment: { 
         BUCKET_S3: props.bucketName,
-        ...(props.bedrockRegion ? { BEDROCK_REGION: props.bedrockRegion } : { })
+        ...(props.bedrockRegion ? { BEDROCK_REGION: props.bedrockRegion } : { }),
+        ...(props.bedrockModelID ? { BEDROCK_MODEL_ID: props.bedrockModelID } : { })
     }
     });
 

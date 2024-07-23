@@ -5,6 +5,7 @@ export interface SystemConfig {
   aws_region: string;
   bucket_name: string;
   bedrock_region: string;
+  bedrock_model_id: string;
 }
 
 export function getConfig(): SystemConfig {
@@ -18,6 +19,7 @@ export function getConfig(): SystemConfig {
     aws_region: "us-west-2",
     bucket_name: "summarization-test",
     bedrock_region: "us-west-2",
+    bedrock_model_id: "anthropic.claude-3-sonnet-20240229-v1:0"
   };
 }
 

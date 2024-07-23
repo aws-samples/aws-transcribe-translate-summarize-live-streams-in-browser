@@ -13,7 +13,7 @@ export interface RealtimeAWSExtensionStackProps extends StackProps {
   readonly config: SystemConfig;
 }
 
-export class RealTimeAwsMeetingExtensionStack extends Stack {
+export class AwsStreamAnalysisStack extends Stack {
   constructor(scope: Construct, id: string, props: RealtimeAWSExtensionStackProps) {
     super(scope, id, props);
 
@@ -69,7 +69,8 @@ export class RealTimeAwsMeetingExtensionStack extends Stack {
       lambdaCodeFolder: "summarize-conversation",
       iamRole: summarizeLambdaRole.lambdaRole,
       bucketName: bucketName,
-      bedrockRegion: props.config.bedrock_region
+      bedrockRegion: props.config.bedrock_region,
+      bedrockModelID: props.config.bedrock_model_id
     });
 
     const retrieveSummaryLambda = new LambdaConstruct(this, `RetrieveSummaryLambdaConstruct`, {
@@ -79,7 +80,8 @@ export class RealTimeAwsMeetingExtensionStack extends Stack {
       lambdaCodeFolder: "retrieve-summary",
       iamRole: retrieveSummaryLambdaRole.lambdaRole,
       bucketName: bucketName,
-      bedrockRegion: null
+      bedrockRegion: null,
+      bedrockModelID: null
     });
 
     const clearBucketLambda = new LambdaConstruct(this, `ClearBucketLambdaConstruct`, {
@@ -89,7 +91,8 @@ export class RealTimeAwsMeetingExtensionStack extends Stack {
       lambdaCodeFolder: "clear-bucket",
       iamRole: clearBucketLambdaRole.lambdaRole,
       bucketName: bucketName,
-      bedrockRegion: null
+      bedrockRegion: null,
+      bedrockModelID: null
     });
 
     // Create API Gateway
