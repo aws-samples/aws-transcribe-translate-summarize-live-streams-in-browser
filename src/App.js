@@ -286,7 +286,7 @@ function App() {
     <Container 
       fitHeight 
       header={
-        <Header variant="h2">AWS Real Time Transcription and Translation</Header>
+        <Header variant="h2">AWS Stream Analysis</Header>
       }>
       <SpaceBetween size="m" direction='vertical'>
         <Container header={

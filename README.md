@@ -1,4 +1,4 @@
-# AWS Real Time Transcription, Translation and Summarization
+# AWS Transcribe, translate and summarize live streams in your browser with AWS AI and Generative AI services
 
 ## Overview
 
