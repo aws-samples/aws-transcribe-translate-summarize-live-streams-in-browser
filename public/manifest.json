@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "AWS transcribe and translate",
+  "name": "AWS transcribe, translate and summarize",
   "version": "0.0.1",
   "content_scripts": [
     {

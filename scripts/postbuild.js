@@ -4,7 +4,7 @@ const glob = require("tiny-glob");
 const manifest = require("../public/manifest.json");
 const config = require("../src/config.js");
 
-const { api_gateway_id: apiGatewayId, aws_project_region: region } = config.module
+const { APIGatewayId: apiGatewayId, aws_project_region: region } = config.module
 
 async function getFileNames(pattern) {
   const files = await glob(`build/static${pattern}`)

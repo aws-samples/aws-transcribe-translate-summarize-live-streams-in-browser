@@ -36,12 +36,6 @@ export class LambdaConstruct extends Construct {
     }
     });
 
-    new CfnOutput(this, `${props.lambdaName}LambdaArn`, {
-        key: `${props.lambdaName}LambdaArn`,
-        value: lambda.functionArn,
-        description: props.lambdaName,
-    });
-
     this.lambdaArn = lambda.functionArn;
     this.lambda = lambda;
   }

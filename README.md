@@ -26,12 +26,12 @@ This is the architecture of the AWS services used to build the browser extension
 ```js
 const config = {
     "aws_project_region": "{aws_region}", // The same you have used as aws_region in cdk/config.json
-    "aws_cognito_identity_pool_id": "{CognitoIdentityPoolId}", // From CloudFormation outputs
-    "aws_user_pools_id": "{CognitoUserPoolId}", // From CloudFormation outputs
-    "aws_user_pools_web_client_id": "{CognitoUserPoolClientId}", // From CloudFormation outputs
-    "bucket_s3": "{BucketS3Name}", // From CloudFormation outputs
     "bedrock_region": "{bedrock_region}", // The same you have used as bedrock_region in cdk/config.json
-    "api_gateway_id": "{APIGatewayId}" // From CloudFormation outputs
+    "APIGatewayId": "{APIGatewayId}", // From CloudFormation outputs
+    "BucketS3Name": "{BucketS3Name}", // From CloudFormation outputs
+    "CognitoIdentityPoolId": "{CognitoIdentityPoolId}", // From CloudFormation outputs
+    "CognitoUserPoolClientId": "{CognitoUserPoolClientId}", // From CloudFormation outputs
+    "CognitoUserPoolId": "{CognitoUserPoolId}", // From CloudFormation outputs
 };
 ```
 
@@ -44,14 +44,14 @@ npm run build
 5. Open Google Chrome browser and go to `chrome://extensions/` link. Ensure **developer mode** is enabled.
 6. Load the `build`  directory in Chrome as an **unpacked extension**.
 7. Make sure you have granted permissions to your browser to record your screen and audio. You can check it under *details* of the extension. To enable access to microphone: 
-    - Click on Extensions > AWS transcribe and translate > Details >  Site Settings > Microphone > Allow.
+    - Click on Extensions > AWS transcribe, translate and summarize > Details >  Site Settings > Microphone > Allow.
 
 8. Go to [Cognito User Pools](https://us-east-1.console.aws.amazon.com/cognito/v2/idp/user-pools?region=us-west-2) and create a new user.
 
 ## Running this extension
 
 1. Click the extension's action icon to start recording. :exclamation: *The icon must be clicked when you are on the same page you want to record from!* :exclamation: 
-2. Open the sidepanel and choose the **AWS transcribe and translate** panel.
+2. Open the sidepanel and choose the **AWS transcribe, translate and summarize** panel.
 3. Click the `Start recording` button again to start recording.
 4. Click the `Stop recording` button again to stop recording.
 

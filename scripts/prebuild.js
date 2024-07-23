@@ -13,10 +13,10 @@ const awsExportsFilePath = path.join(__dirname, '../src/aws-exports.js');
 const awsExportsContent = `
 const awsConfig = {
   "aws_project_region": "${config.aws_project_region}",
-  "aws_cognito_identity_pool_id": "${config.aws_cognito_identity_pool_id}",
+  "aws_cognito_identity_pool_id": "${config.CognitoIdentityPoolId}",
   "aws_cognito_region": "${config.aws_project_region}",
-  "aws_user_pools_id": "${config.aws_user_pools_id}",
-  "aws_user_pools_web_client_id": "${config.aws_user_pools_web_client_id}",  
+  "aws_user_pools_id": "${config.CognitoUserPoolId}",
+  "aws_user_pools_web_client_id": "${config.CognitoUserPoolClientId}",  
   "oauth": {},
   "aws_cognito_username_attributes": [
       "EMAIL"

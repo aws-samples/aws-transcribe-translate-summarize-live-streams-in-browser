@@ -3,7 +3,7 @@ import axios from 'axios';
 import { v4 as uuidv4 } from 'uuid';
 import config from '../config';
 
-const apiGatewayId = config.module.api_gateway_id
+const apiGatewayId = config.module.APIGatewayId
 const region = config.module.aws_project_region
 const apiGatewayBaseUrl = `https://${apiGatewayId}.execute-api.${region}.amazonaws.com/prod`
 

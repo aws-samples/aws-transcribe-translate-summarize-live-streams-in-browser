@@ -16,7 +16,7 @@ import { clearBucketS3, getSummary, initIdToken, sendText } from './lib/summariz
 
 Amplify.configure(awsExports);
 
-let BUCKET_NAME = config.module.bucket_s3
+let BUCKET_NAME = config.module.BucketS3Name
 let recorder;
 let data = [];
 
