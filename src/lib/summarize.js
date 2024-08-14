@@ -43,7 +43,8 @@ export const sendText = async ({ transcript, lang, translationLang, translation,
         { 
             headers: { 
                 'Authorization': `Bearer ${idToken}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             }
         } )
 
@@ -77,7 +78,8 @@ export const getSummary = async ({ summaryLang, translationLang }) => {
             },
             headers: { 
                 'Authorization': `Bearer ${idToken}`,
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*'
             }
         })
 

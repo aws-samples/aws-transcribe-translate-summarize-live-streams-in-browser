@@ -20,14 +20,14 @@ async function main() {
     ...manifest,
     content_scripts: [
       {
-        ...manifest.content_scripts[0],
+        ...manifest.content_scripts?.[0],
         js,
         css,
       },
     ],
     web_accessible_resources: [
       {
-        ...manifest.web_accessible_resources[0],
+        ...manifest.web_accessible_resources?.[0],
         resources: [...css],
       },
     ],
