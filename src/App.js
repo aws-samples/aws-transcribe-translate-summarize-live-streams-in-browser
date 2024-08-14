@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Amplify } from 'aws-amplify';
+import { LiveAudioVisualizer } from 'react-audio-visualize';
 
 import { withAuthenticator, Text } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
@@ -312,6 +313,7 @@ function App() {
               </Box>
             }>Settings</Header>
           }>
+            <SpaceBetween size="m" direction='vertical'>
           <Grid
             gridDefinition={[{ colspan: 5 }, { colspan: 5 }]}
           >
@@ -335,6 +337,18 @@ function App() {
               options={translateLanguageOptions}
             />
           </Grid>
+          <Box>
+              {recorder ? (
+                <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                  <LiveAudioVisualizer
+                    mediaRecorder={recorder}
+                    width={100}
+                    height={30}
+                  />
+                </div>
+              ) : <div style={{height: '30px'}}></div>}
+          </Box>
+          </SpaceBetween>
         </Container>
         <Container>
         <Tabs
