@@ -27,6 +27,7 @@ let langToSummarize = ""
 let translationLangToSummarize = ""
 let numSpeakers = 0
 let summaryLanguage = ""
+let recordingInterval = false
   
 async function getCurrentTab() {
   let queryOptions = { active: true, currentWindow: true };
@@ -38,7 +39,7 @@ async function getCurrentTab() {
 
 function summarizeTextAtInterval() {
   // send conversation to Amazon Bedrock through API GW to generate a summary
-  if(textToSummarize != undefined){
+  if(recordingInterval && textToSummarize != undefined){
     sendText({transcript: textToSummarize, lang: langToSummarize, translationLang: translationLangToSummarize, translation: translationToSummarize, numSpeakers})
       .then(value => summaryLanguage = value)
       .catch(error => console.log(error))
@@ -137,7 +138,6 @@ async function startRecording({streamId, transcription, setTranscription, setCur
   summaryLanguage = undefined
 
   // every 3 mins summarize text: only if recording!
-  // TODO: stop when no recording
   setInterval(summarizeTextAtInterval, 360000);
 
   chrome.action.setIcon({ path: 'icons/recording.png' });
@@ -169,7 +169,7 @@ async function startRecording({streamId, transcription, setTranscription, setCur
 
         // update variables to summarize conversation with Amazon Bedrock (transcription), only when transcription is final
         textToSummarize += `${text}\n`
-        if(identifiedLanguage) { langToSummarize = identifiedLanguage } // TODO: if it changes, should it change?
+        if(identifiedLanguage) { langToSummarize = identifiedLanguage }
         
         // translation_array is the array of translation sentences
         const translation_array = translation
@@ -240,6 +240,7 @@ async function stopRecording({setRecordingOn}) {
   // keep the sample fairly simple to follow.
 
   setRecordingOn(false)
+  recordingInterval = false
   chrome.action.setIcon({ path: 'icons/not-recording.png' });
   chrome.action.setBadgeText({ text: 'OFF' });
 }
@@ -247,6 +248,7 @@ async function stopRecording({setRecordingOn}) {
 
 async function recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options}) {
   setRecordingOn(true)
+  recordingInterval = true
 
   const tab = await getCurrentTab()
   const tabId = tab.id
@@ -264,8 +266,13 @@ async function recording({setRecordingOn, transcription, setTranscription, setCu
   }catch(e){
     console.log("error recording")
     console.log(e)
+
+    // If recording throws some error: stop recording
     chrome.action.setIcon({ path: 'icons/not-recording.png' });
     chrome.action.setBadgeText({ text: 'OFF' });
+
+    setRecordingOn(false)
+    recordingInterval = false
     return
   }
 }
