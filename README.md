@@ -52,8 +52,12 @@ npm run build
 
 1. Click the extension's action icon to start recording. :exclamation: *The icon must be clicked when you are on the same page you want to record from!* :exclamation: 
 2. Open the sidepanel and choose the **AWS transcribe, translate and summarize** panel.
-3. Click the `Start recording` button again to start recording.
-4. Click the `Stop recording` button again to stop recording.
+3. Use the Settings panel to update the settings of the application:
+    - **video/meeting toggle**: 'video' is used to record only the audio of the browser tab for an existing video streaming, while 'meeting' is used for a real-time meeting where your michrophone is recorded as well
+    - **Transcription language**: language of the live stream to be recorded (set to 'auto' to allow automatic identification of the language)
+    - **Translation language**: language in which the live stream will be translated and the summary will be printed. Once you've chosen the translation language and started the recording, you cannot change your choice for the ognoing live stream. In order to change translation language for transcript and summary, you will have to record it from scratch.
+4. Click the `Start recording` button again to start recording.
+5. Click the `Stop recording` button again to stop recording.
 
 ## Troubleshooting
 

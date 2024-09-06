@@ -7,7 +7,7 @@ import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { withAuthenticator, Text } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
-import { SpaceBetween, Container, Header, Button, Box, Select, TextContent, Tabs, Grid, Modal, Alert } from "@cloudscape-design/components";
+import { SpaceBetween, Container, Header, Button, Box, Select, TextContent, Tabs, Grid, Modal, Alert, Toggle } from "@cloudscape-design/components";
 
 import awsExports from './aws-exports';
 import config from './config';
@@ -80,9 +80,10 @@ async function startRecording({streamId, transcription, setTranscription, setCur
     }
   });
 
-  const mediaMic = await navigator.mediaDevices.getUserMedia({
+  const meeting = !options.video // The audio can be either a video in the browser tab or a meeting where we want to record also the audio from microphone
+  const mediaMic = meeting ? await navigator.mediaDevices.getUserMedia({
     audio: true
-  });
+  }) : undefined;
 
   // Continue to play the captured audio to the user.
   const output = new AudioContext();
@@ -93,12 +94,12 @@ async function startRecording({streamId, transcription, setTranscription, setCur
   const audioContext = new AudioContext();
 
   const audioIn_01 = audioContext.createMediaStreamSource(media);
-  const audioIn_02 = audioContext.createMediaStreamSource(mediaMic);
+  const audioIn_02 = meeting ? audioContext.createMediaStreamSource(mediaMic) : undefined;
 
   const dest = audioContext.createMediaStreamDestination();
 
   audioIn_01.connect(dest);
-  audioIn_02.connect(dest);
+  if(meeting) audioIn_02.connect(dest);
 
   const finalStream = dest.stream
 
@@ -110,7 +111,7 @@ async function startRecording({streamId, transcription, setTranscription, setCur
     // window.open(URL.createObjectURL(blob), '_blank');
 
     media.getTracks().forEach((t) => t.stop());
-    mediaMic.getTracks().forEach((t) => t.stop());
+    if(meeting) mediaMic.getTracks().forEach((t) => t.stop());
   };
 
   // timeslice: number of milliseconds to record into each Blob
@@ -291,7 +292,7 @@ function App() {
   const [activeSummaryButton, setActiveSummaryButton] = useState(true)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   
-  const [options, setOptions] = useState({transcriptionLang: "en-US", translationLang: "it", identifyLanguage: false}) // default
+  const [options, setOptions] = useState({transcriptionLang: "en-US", translationLang: "it", identifyLanguage: false, video: true}) // default
 
   return (
     <Container 
@@ -305,6 +306,16 @@ function App() {
             variant="h3"
             actions={
               <Box>
+                <SpaceBetween size="m" direction='horizontal'>
+                <Toggle
+                  disabled={recordingOn}
+                  onChange={({ detail }) =>
+                    setOptions({...options, video: detail.checked})
+                  }
+                  checked={options.video}
+                >
+                  {options.video ? 'video' : 'meeting'}
+                </Toggle>
                 { !recordingOn ? 
                   <Button onClick={() => {
                     setTranscription([])
@@ -313,10 +324,11 @@ function App() {
                   }>Start recording</Button> : 
                   <Button onClick={() => stopRecording({setRecordingOn})}>Stop recording</Button>
                 }
+                </SpaceBetween>
               </Box>
             }>Settings</Header>
           }>
-            <SpaceBetween size="m" direction='vertical'>
+          <SpaceBetween size="m" direction='vertical'>
           <Grid
             gridDefinition={[{ colspan: 5 }, { colspan: 5 }]}
           >
