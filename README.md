@@ -2,7 +2,7 @@
 
 ## Overview
 
-This is a real time transcription and translation Chrome extension. It will transcribe your meeting and provide a translation in the desired language. After the meeting is over, it will provide a summary of the key points.
+This is a real time transcription and translation Chrome extension. It will transcribe your live stream and provide a translation in the desired language. After the live stream is over, it will provide a summary of the key points.
 
 It is built on AWS Cloud and it is based on the following services:
 - Amazon Transcribe to transcribe the meeting/video, including automatic detection of the audio language;
@@ -25,13 +25,13 @@ This is the architecture of the AWS services used to build the browser extension
 3. **Important**: if you followed the automated step described in [cdk/README.md](cdk/README.md) executing the postdeploy script to configure the variables, you don't need to copy/paste the values manually (just check that the values have been populated). Otherwise, populate the [src/config.js](src/config.js) with AWS CloudFormation outputs.
 ```js
 const config = {
-    "aws_project_region": "{aws_region}", // The same you have used as aws_region in cdk/config.json
-    "bedrock_region": "{bedrock_region}", // The same you have used as bedrock_region in cdk/config.json
-    "APIGatewayId": "{APIGatewayId}", // From CloudFormation outputs
-    "BucketS3Name": "{BucketS3Name}", // From CloudFormation outputs
-    "CognitoIdentityPoolId": "{CognitoIdentityPoolId}", // From CloudFormation outputs
-    "CognitoUserPoolClientId": "{CognitoUserPoolClientId}", // From CloudFormation outputs
-    "CognitoUserPoolId": "{CognitoUserPoolId}", // From CloudFormation outputs
+    "aws_project_region": "{aws_region}",
+    "bedrock_region": "{bedrock_region}",
+    "APIGatewayId": "{APIGatewayId}",
+    "BucketS3Name": "{BucketS3Name}",
+    "CognitoIdentityPoolId": "{CognitoIdentityPoolId}",
+    "CognitoUserPoolClientId": "{CognitoUserPoolClientId}",
+    "CognitoUserPoolId": "{CognitoUserPoolId}"
 };
 ```
 
@@ -53,7 +53,7 @@ npm run build
 1. Click the extension's action icon to start recording. :exclamation: *The icon must be clicked when you are on the same page you want to record from!* :exclamation: 
 2. Open the sidepanel and choose the **AWS transcribe, translate and summarize** panel.
 3. Use the Settings panel to update the settings of the application:
-    - **video/meeting toggle**: 'video' is used to record only the audio of the browser tab for an existing video streaming, while 'meeting' is used for a real-time meeting where your michrophone is recorded as well
+    - **mic in use toggle**: 'mic not in use' is used to record only the audio of the browser tab for a live video streaming, while 'mic in use' is used for a real-time meeting where your michrophone is recorded as well
     - **Transcription language**: language of the live stream to be recorded (set to 'auto' to allow automatic identification of the language)
     - **Translation language**: language in which the live stream will be translated and the summary will be printed. Once you've chosen the translation language and started the recording, you cannot change your choice for the ognoing live stream. In order to change translation language for transcript and summary, you will have to record it from scratch.
 4. Click the `Start recording` button again to start recording.
@@ -65,7 +65,7 @@ npm run build
     - [**Error: Extension has not been invoked for the current page (see activeTab permission). Chrome pages cannot be captured.**] Make sure you are using it on the tab where you first opened the sidepanel. If you want to use it on a different tab, stop the extension, close the sidepanel and click on the extension icon again to run it (as "Running this extension" section).
     - Make sure you have given permissions for audio recording in the web browser.
 
-- If you can't get the summary of video/meeting, make sure you have stopped the recording and then request the summary. You cannot change the language of the transcript and summary after the recording has started, so remember to choose it appropriately before you start the recording.
+- If you can't get the summary of the live stream, make sure you have stopped the recording and then request the summary. You cannot change the language of the transcript and summary after the recording has started, so remember to choose it appropriately before you start the recording.
 
 ## Clean up
 - To clean up the summary of the conversations in the Amazon S3 Bucket, navigate to the `Clean up` tab and click the `Clear all conversations`.
