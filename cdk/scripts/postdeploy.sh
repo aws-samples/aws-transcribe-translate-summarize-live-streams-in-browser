@@ -10,19 +10,15 @@ PREFIX=$(sed -n 's/^.*"prefix": "\([^"]*\)".*$/\1/p' "$CDK_CONFIG_FILE")
 
 # Check if the "aws_region" key was found
 if [ -z "$aws_region" ]; then
-  echo "Error: 'aws_region' key not found in the JSON file."
-  exit 1
+    echo "Error: 'aws_region' key not found in the JSON file."
+    exit 1
 fi
 
 # Check if the "bedrock_region" key was found
 if [ -z "$bedrock_region" ]; then
-  echo "Error: 'bedrock_region' key not found in the JSON file."
-  exit 1
+    echo "Error: 'bedrock_region' key not found in the JSON file."
+    exit 1
 fi
-
-# Output the values from 
-echo "aws_region: $aws_region"
-echo "bedrock_region: $bedrock_region"
 
 aws_region_json="\"aws_project_region\": \"$aws_region\""
 bedrock_region_json="\"bedrock_region\": \"$bedrock_region\""
@@ -39,11 +35,9 @@ identity_pool_id=$(aws cloudformation describe-stacks --stack-name "$stack_name"
 web_client_id=$(aws cloudformation describe-stacks --stack-name "$stack_name" --query "Stacks[0].Outputs[?OutputKey=='CognitoUserPoolClientId'].OutputValue" --output text --region $aws_region)
 
 # Check if the "APIGatewayId" output is present
-if [ -n "$api_gateway_id" ]; then
-    echo "APIGatewayId for stack '$stack':"
-    echo "$api_gateway_id"
-else
-    echo "No 'APIGatewayId' output found for stack '$stack'"
+if [ -z "$api_gateway_id" ]; then
+    echo "Error: No 'APIGatewayId' output found for stack '$stack'"
+    exit 1
 fi
 
 output_file="../src/config.js"
@@ -53,8 +47,6 @@ bucket_s3_name_json="\"BucketS3Name\": \"$bucket_s3_name\""
 user_pool_id_json="\"CognitoUserPoolId\": \"$user_pool_id\""
 identity_pool_id_json="\"CognitoIdentityPoolId\": \"$identity_pool_id\""
 web_client_id_json="\"CognitoUserPoolClientId\": \"$web_client_id\""
-
-# echo "$json_object" > "$output_file"
 
 echo "// DO NOT COMMIT AWS resources IDs to your git repository
 const config = {
@@ -68,3 +60,5 @@ const config = {
 };
 
 exports.module = config" > "$output_file"
+
+echo "Configuration file 'src/config.js' created successfully."
