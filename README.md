@@ -58,7 +58,7 @@ npm run build
 ## Troubleshooting
 
 - If the extension is not working:
-    - Make sure you are using it on the tab where you first opened the sidepanel. If you want to use it on a different tab, stop the extension, close the sidepanel and click on the extension icon again to run it (as "Running this extension" section).
+    - [**Error: Extension has not been invoked for the current page (see activeTab permission). Chrome pages cannot be captured.**] Make sure you are using it on the tab where you first opened the sidepanel. If you want to use it on a different tab, stop the extension, close the sidepanel and click on the extension icon again to run it (as "Running this extension" section).
     - Make sure you have given permissions for audio recording in the web browser.
 
 - If you can't get the summary of video/meeting, make sure you have stopped the recording and then request the summary.

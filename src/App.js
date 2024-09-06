@@ -20,6 +20,7 @@ Amplify.configure(awsExports);
 let BUCKET_NAME = config.module.BucketS3Name
 let recorder;
 let data = [];
+let error = undefined;
 
 // initialize global variables needed for summarization
 let textToSummarize = ""
@@ -262,11 +263,13 @@ async function recording({setRecordingOn, transcription, setTranscription, setCu
       targetTabId: tabId,
     });
 
+    error = undefined
     await startRecording({streamId, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options})
 
   }catch(e){
     console.log("error recording")
     console.log(e)
+    error = e.toString()
 
     // If recording throws some error: stop recording
     chrome.action.setIcon({ path: 'icons/not-recording.png' });
@@ -338,7 +341,7 @@ function App() {
             />
           </Grid>
           <Box>
-              {recorder ? (
+              {!error && recorder ? (
                 <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
                   <LiveAudioVisualizer
                     mediaRecorder={recorder}
@@ -346,7 +349,10 @@ function App() {
                     height={30}
                   />
                 </div>
-              ) : <div style={{height: '30px'}}></div>}
+              ) : ( error ?
+                <TextContent>{`${error}.\nUse troubleshooting tips in README.md to solve the issue.`}</TextContent> :
+                <div style={{height: '30px'}}></div>
+              )}
           </Box>
           </SpaceBetween>
         </Container>
