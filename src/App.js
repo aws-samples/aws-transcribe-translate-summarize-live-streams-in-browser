@@ -7,7 +7,7 @@ import { LiveAudioVisualizer } from 'react-audio-visualize';
 import { withAuthenticator, Text } from '@aws-amplify/ui-react';
 import '@aws-amplify/ui-react/styles.css';
 
-import { SpaceBetween, Container, Header, Button, Box, Select, TextContent, Tabs, Grid, Modal, Alert, Toggle } from "@cloudscape-design/components";
+import { SpaceBetween, Container, Header, Button, Box, Select, TextContent, Tabs, Grid, Modal, Alert, Toggle, Icon } from "@cloudscape-design/components";
 
 import awsExports from './aws-exports';
 import config from './config';
@@ -80,7 +80,7 @@ async function startRecording({streamId, transcription, setTranscription, setCur
     }
   });
 
-  const meeting = !options.video // The audio can be either a video in the browser tab or a meeting where we want to record also the audio from microphone
+  const meeting = options.mic // The audio can be either a video in the browser tab or a meeting where we want to record also the audio from microphone
   const mediaMic = meeting ? await navigator.mediaDevices.getUserMedia({
     audio: true
   }) : undefined;
@@ -292,7 +292,7 @@ function App() {
   const [activeSummaryButton, setActiveSummaryButton] = useState(true)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   
-  const [options, setOptions] = useState({transcriptionLang: "en-US", translationLang: "it", identifyLanguage: false, video: true}) // default
+  const [options, setOptions] = useState({transcriptionLang: "en-US", translationLang: "it", identifyLanguage: false, mic: false}) // default
 
   return (
     <Container 
@@ -310,11 +310,11 @@ function App() {
                 <Toggle
                   disabled={recordingOn}
                   onChange={({ detail }) =>
-                    setOptions({...options, video: detail.checked})
+                    setOptions({...options, mic: detail.checked})
                   }
-                  checked={options.video}
+                  checked={options.mic}
                 >
-                  {options.video ? 'video' : 'meeting'}
+                  {options.mic ? <Icon name="microphone" /> : <Icon name="microphone-off" />}
                 </Toggle>
                 { !recordingOn ? 
                   <Button onClick={() => {
@@ -394,8 +394,13 @@ function App() {
               id: "summary",
               content: 
               <>
-                <Button disabled={!transcription?.[0] || transcription?.[0] === "" || !activeSummaryButton} onClick={() => retrieveSummary({setSummary, setActiveSummaryButton})}>{!summary ? "Get summary" : "Update summary"}</Button>
-                <TextContent>{"\n"}</TextContent>
+                <Button disabled={!transcription?.[0] || transcription?.[0] === "" || !activeSummaryButton} onClick={() => retrieveSummary({setSummary, setActiveSummaryButton})}>
+                  <SpaceBetween size="s" direction='horizontal'>
+                    {!summary ? "Get summary" : "Update summary"}
+                    <Icon name="gen-ai" />
+                  </SpaceBetween>
+                </Button>
+                <TextContent>{"\n\n"}</TextContent>
                 <TextContent>{summary}</TextContent> 
               </>
             },
@@ -405,8 +410,13 @@ function App() {
               content: 
               <>
                 <Button disabled={recordingOn}
-                  onClick={() => setShowDeleteModal(true)}>Clear all conversations</Button>  
-                 <DeleteModal
+                  onClick={() => setShowDeleteModal(true)}>
+                  <SpaceBetween size="s" direction='horizontal'>
+                    Clear all conversations
+                    <Icon name="remove" />
+                  </SpaceBetween>
+                </Button>  
+                <DeleteModal
                   visible={showDeleteModal}
                   onDiscard={() => setShowDeleteModal(false)}
                   onDelete={clearBucketS3}
