@@ -15,7 +15,7 @@ export function getConfig(): SystemConfig {
 
   // Default config
   return {
-    prefix: "aaa123", // TODO: random
+    prefix: "aaa123",
     aws_region: "us-west-2",
     bucket_name: "summarization-test",
     bedrock_region: "us-west-2",

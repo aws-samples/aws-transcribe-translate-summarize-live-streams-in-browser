@@ -22,7 +22,7 @@ This is the architecture of the AWS services used to build the browser extension
 
 1. Clone this repository.
 2. Deploy the backend through AWS CDK, following the instructions on [cdk/README.md](cdk/README.md).
-3. Populate the [src/config.js](src/config.js) with AWS CloudFormation outputs.
+3. **Important**: if you followed the automated step described in [cdk/README.md](cdk/README.md) executing the postdeploy script to configure the variables, you don't need to copy/paste the values manually (just check that the values have been populated). Otherwise, populate the [src/config.js](src/config.js) with AWS CloudFormation outputs.
 ```js
 const config = {
     "aws_project_region": "{aws_region}", // The same you have used as aws_region in cdk/config.json
@@ -55,6 +55,13 @@ npm run build
 3. Click the `Start recording` button again to start recording.
 4. Click the `Stop recording` button again to stop recording.
 
+## Troubleshooting
+
+- If the extension is not working:
+    - Make sure you are using it on the tab where you first opened the sidepanel. If you want to use it on a different tab, stop the extension, close the sidepanel and click on the extension icon again to run it (as "Running this extension" section).
+    - Make sure you have given permissions for audio recording in the web browser.
+
+- If you can't get the summary of video/meeting, make sure you have stopped the recording and then request the summary.
 
 ## Clean up
 - To clean up the summary of the conversations in the Amazon S3 Bucket, navigate to the `Clean up` tab and click the `Clear all conversations`.
