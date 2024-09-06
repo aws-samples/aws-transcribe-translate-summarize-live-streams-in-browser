@@ -32,10 +32,21 @@ In this repository, WAF is not enabled, but it is highly recommended to enable i
 * Navigate to directory `{repo_name}/cdk`.
 * Execute the following command: `npx cdk deploy` to deploy this stack to your AWS account in the AWS_REGION specified in the `config.aws_region`.
 * Confirm the deploy of the listed resources and wait for AWS CloudFormation to finish creating the stack.
-* You will need to use CloudFormation outputs to connect your frontend to the backend, so you have two possibilities:
-  - wait for outputs to be printed in the terminal window,
-  - open the AWS Console and go to [AWS CloudFormation](https://us-west-2.console.aws.amazon.com/cloudformation/home) in the region where you have deployed the stack, then choose the just created stack and look for the `Outputs` tabs.
+* You will need to use CloudFormation outputs to connect your frontend to the backend, so after the deploy has completed, you have two possibilities:
+  - **Use automation (preferred)**: Use the provided postdeploy sh script to automatically copy the cdk configuration parameters to the browser extension configuration file. Execute the following command, still in the `/cdk` folder: `./scripts/postdeploy.sh`
+  - Otherwise copy the configuration manually: wait for `Outputs` to be printed in the terminal window or open the AWS Console and go to [AWS CloudFormation](https://us-west-2.console.aws.amazon.com/cloudformation/home) in the region where you have deployed the stack, then choose the just created stack and look for the `Outputs` tabs. Then, use the output values to complete the next steps.
 * Go on to next step [here](../README.md).
+
+## Troubleshooting
+
+If the `npx cdk deploy` command did not work, check the following:
+- You are logged in your AWS account.
+- You have bootstrapped cdk in the AWS account and AWS region (`aws_region` in the config.json file) you are using to deploy the project.
+- You have the necessary permissions to create resources on the AWS account.
+
+If the `./scripts/postdeploy.sh` script does not work, check the following:
+- You are still logged in you AWS account.
+- You executed the command from the folder `{repo_name}/cdk`.
 
 ## Clean up
 To clean up all backend resources on your AWS account, you need to run the command: `npx cdk destroy`.
