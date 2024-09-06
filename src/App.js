@@ -446,7 +446,7 @@ function DeleteModal({ visible, onDiscard, onDelete }) {
     >
       <SpaceBetween size="m">
         <Box variant="span"> 
-              Permanently delete resources on the AWS cloud: Bucket S3
+              Permanently delete resources on the AWS cloud: Objects in Bucket S3
               <Box variant="span" fontWeight="bold">
                 {` ${BUCKET_NAME}`}
               </Box>
@@ -454,7 +454,7 @@ function DeleteModal({ visible, onDiscard, onDelete }) {
         </Box>
 
         <Alert statusIconAriaLabel="Info">
-          Proceeding with this action will delete the S3 Bucket 
+          Proceeding with this action will clear all conversations in the S3 Bucket 
           {` ${BUCKET_NAME}`} and can
           affect related resources.
           
