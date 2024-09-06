@@ -65,7 +65,7 @@ npm run build
     - [**Error: Extension has not been invoked for the current page (see activeTab permission). Chrome pages cannot be captured.**] Make sure you are using it on the tab where you first opened the sidepanel. If you want to use it on a different tab, stop the extension, close the sidepanel and click on the extension icon again to run it (as "Running this extension" section).
     - Make sure you have given permissions for audio recording in the web browser.
 
-- If you can't get the summary of video/meeting, make sure you have stopped the recording and then request the summary.
+- If you can't get the summary of video/meeting, make sure you have stopped the recording and then request the summary. You cannot change the language of the transcript and summary after the recording has started, so remember to choose it appropriately before you start the recording.
 
 ## Clean up
 - To clean up the summary of the conversations in the Amazon S3 Bucket, navigate to the `Clean up` tab and click the `Clear all conversations`.
