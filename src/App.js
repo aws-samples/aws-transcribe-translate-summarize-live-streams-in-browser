@@ -30,6 +30,7 @@ let translationLangToSummarize = ""
 let numSpeakers = 0
 let summaryLanguage = ""
 let recordingInterval = false
+let updatedSummary = false
   
 async function getCurrentTab() {
   let queryOptions = { active: true, currentWindow: true };
@@ -43,7 +44,10 @@ function summarizeTextAtInterval() {
   // send conversation to Amazon Bedrock through API GW to generate a summary
   if(recordingInterval && textToSummarize != undefined){
     sendText({transcript: textToSummarize, lang: langToSummarize, translationLang: translationLangToSummarize, translation: translationToSummarize, numSpeakers})
-      .then(value => summaryLanguage = value)
+      .then(value => {
+        summaryLanguage = value
+        updatedSummary = true
+      })
       .catch(error => console.log(error))
     textToSummarize = ""
     translationToSummarize = ""
@@ -52,9 +56,14 @@ function summarizeTextAtInterval() {
 
 async function retrieveSummary({setSummary, setActiveSummaryButton}) {
   setActiveSummaryButton(false)
-  while(!summaryLanguage){
-    // wait 2 secs
-    await new Promise(r => setTimeout(r, 2000));
+  let retry = 0
+  updatedSummary = false
+  while(!updatedSummary && retry < 10){
+    // Update the summary before retrieving it
+    summarizeTextAtInterval()
+    // wait 5 secs and retry
+    await new Promise(r => setTimeout(r, 5000));
+    retry+= 1
   }
 
   getSummary({ summaryLang: summaryLanguage, translationLang: translationLangToSummarize })
@@ -393,16 +402,15 @@ function App() {
               label: "Summary",
               id: "summary",
               content: 
-              <>
+              <SpaceBetween size="m" direction='vertical'>
                 <Button disabled={!transcription?.[0] || transcription?.[0] === "" || !activeSummaryButton} onClick={() => retrieveSummary({setSummary, setActiveSummaryButton})}>
                   <SpaceBetween size="s" direction='horizontal'>
                     {!summary ? "Get summary" : "Update summary"}
                     <Icon name="gen-ai" />
                   </SpaceBetween>
                 </Button>
-                <TextContent>{"\n\n"}</TextContent>
                 <TextContent>{summary}</TextContent> 
-              </>
+              </SpaceBetween>
             },
             {
               label: "Clean up",
