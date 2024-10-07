@@ -1,6 +1,6 @@
-# AWS Transcribe, translate and summarize live streams in your browser with AWS AI and Generative AI services - Backend
+# Transcribe, translate and summarize live streams in your browser with AWS AI and Generative AI services - Backend
 
-This is the backend project for your AWS Transcribe, translate and summarize live streams in your browser with AWS AI and Generative AI services Extension.
+This is the backend project for your *Transcribe, translate and summarize live streams in your browser with AWS AI and Generative AI services* Extension.
 
 ## Prerequisites
 * You need to have `node` installed. The project was tested with `node v20.12.0`.

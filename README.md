@@ -1,4 +1,4 @@
-# AWS Transcribe, translate and summarize live streams in your browser with AWS AI and Generative AI services
+# Transcribe, translate and summarize live streams in your browser with AWS AI and Generative AI services
 
 ## Overview
 
@@ -44,14 +44,14 @@ npm run build
 5. Open Google Chrome browser and go to `chrome://extensions/` link. Ensure **developer mode** is enabled.
 6. Load the `build`  directory in Chrome as an **unpacked extension**.
 7. Make sure you have granted permissions to your browser to record your screen and audio. You can check it under *details* of the extension. To enable access to microphone: 
-    - Click on Extensions > AWS transcribe, translate and summarize > Details >  Site Settings > Microphone > Allow.
+    - Click on Extensions > Transcribe, translate and summarize live streams (powered by AWS) > Details >  Site Settings > Microphone > Allow.
 
 8. Go to [Cognito User Pools](https://us-east-1.console.aws.amazon.com/cognito/v2/idp/user-pools?region=us-west-2) and create a new user.
 
 ## Running this extension
 
 1. Click the extension's action icon to start recording. :exclamation: *The icon must be clicked when you are on the same page you want to record from!* :exclamation: 
-2. Open the sidepanel and choose the **AWS transcribe, translate and summarize** panel.
+2. Open the sidepanel and choose the **Transcribe, translate and summarize live streams (powered by AWS)** panel.
 3. Use the Settings panel to update the settings of the application:
     - **mic in use toggle**: 'mic not in use' is used to record only the audio of the browser tab for a live video streaming, while 'mic in use' is used for a real-time meeting where your michrophone is recorded as well
     - **Transcription language**: language of the live stream to be recorded (set to 'auto' to allow automatic identification of the language)
