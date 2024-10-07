@@ -12,6 +12,9 @@ It is built on AWS Cloud and it is based on the following services:
 The whole sample uses services and resources in your AWS account.
 
 ### Example
+
+See an example of how the extension works in the video below.
+
 <img src="/assets/chrome_extension.gif"/>
 
 ### Architecture
@@ -47,6 +50,13 @@ npm run build
     - Click on Extensions > Transcribe, translate and summarize live streams (powered by AWS) > Details >  Site Settings > Microphone > Allow.
 
 8. Go to [Cognito User Pools](https://us-east-1.console.aws.amazon.com/cognito/v2/idp/user-pools?region=us-west-2) and create a new user.
+
+
+### Extension configuration
+See a walkthrough of the browser configuration steps (5-7) in the video below.
+
+<img src="/assets/extension_settings.gif"/>
+
 
 ## Running this extension
 
