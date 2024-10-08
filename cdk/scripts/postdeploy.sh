@@ -50,8 +50,8 @@ web_client_id_json="\"CognitoUserPoolClientId\": \"$web_client_id\""
 
 echo "// DO NOT COMMIT AWS resources IDs to your git repository
 const config = {
-    $aws_region_json, // The same you have used as aws_region in cdk/config.json
-    $bedrock_region_json, // The same you have used as bedrock_region in cdk/config.json
+    $aws_region_json, // The same you have used as aws_region in cdk/bin/config.json
+    $bedrock_region_json, // The same you have used as bedrock_region in cdk/bin/config.json
     $api_gateway_id_json, // From CloudFormation outputs
     $bucket_s3_name_json, // From CloudFormation outputs
     $identity_pool_id_json, // From CloudFormation outputs

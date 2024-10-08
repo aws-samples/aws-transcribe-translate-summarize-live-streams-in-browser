@@ -15,7 +15,7 @@ In this repository, WAF is not enabled, but it is highly recommended to enable i
 
 ## Installing the backend
 
-* Open `cdk/config.json` file and populate the configuration variables.
+* Open `cdk/bin/config.json` file and populate the configuration variables.
 ```json
 {
   "prefix": "aaa1234", // A random prefix to differentiate the deploy
