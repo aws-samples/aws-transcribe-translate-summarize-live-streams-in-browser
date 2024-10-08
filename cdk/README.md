@@ -30,6 +30,7 @@ In this repository, WAF is not enabled, but it is highly recommended to enable i
 * Make sure you have allowed access to the model in the desired region following instructions [here](https://docs.aws.amazon.com/bedrock/latest/userguide/model-access.html).
 * In a terminal window, login to your AWS Account.
 * Navigate to directory `{repo_name}/cdk`.
+* Install dependencies by running: `npm install`.
 * Execute the following command: `npx cdk deploy` to deploy this stack to your AWS account in the AWS_REGION specified in the `config.aws_region`.
 * Confirm the deploy of the listed resources and wait for AWS CloudFormation to finish creating the stack.
 * You will need to use CloudFormation outputs to connect your frontend to the backend, so after the deploy has completed, you have two possibilities:
