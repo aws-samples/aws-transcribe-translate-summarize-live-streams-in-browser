@@ -40,13 +40,20 @@ async function getCurrentTab() {
   return tab;
 }
 
-function summarizeTextAtInterval() {
+function summarizeTextAtInterval({setSummaryError}) {
   // send conversation to Amazon Bedrock through API GW to generate a summary
+
+  setSummaryError(null)
+
   if(recordingInterval && textToSummarize != undefined){
     sendText({transcript: textToSummarize, lang: langToSummarize, translationLang: translationLangToSummarize, translation: translationToSummarize, numSpeakers})
       .then(value => {
-        summaryLanguage = value
-        updatedSummary = true
+        if(value?.error){
+          setSummaryError(value.message)
+        }else{
+          summaryLanguage = value
+          updatedSummary = true
+        }
       })
       .catch(error => console.log(error))
     textToSummarize = ""
@@ -54,13 +61,13 @@ function summarizeTextAtInterval() {
   }
 }
 
-async function retrieveSummary({setSummary, setActiveSummaryButton}) {
+async function retrieveSummary({setSummary, setActiveSummaryButton, setSummaryError, summaryError}) {
   setActiveSummaryButton(false)
   let retry = 0
   updatedSummary = false
   while(!updatedSummary && retry < 10){
     // Update the summary before retrieving it
-    summarizeTextAtInterval()
+    summarizeTextAtInterval({setSummaryError})
     // wait 5 secs and retry
     await new Promise(r => setTimeout(r, 5000));
     retry+= 1
@@ -68,13 +75,18 @@ async function retrieveSummary({setSummary, setActiveSummaryButton}) {
 
   getSummary({ summaryLang: summaryLanguage, translationLang: translationLangToSummarize })
     .then(value => {
-      setSummary(value)
+      if(value?.error){
+        setSummary("")
+        if(!summaryError) { setSummaryError(value.message) }
+      }else{
+        setSummary(value)
+      }
       setActiveSummaryButton(true)
     })
     .catch(error => console.log(error))
 }
 
-async function startRecording({streamId, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError}) {
+async function startRecording({streamId, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError, setSummaryError}) {
   console.log("start recording")
   if (recorder?.state === 'recording') {
     throw new Error('Called startRecording while recording is in progress.');
@@ -151,7 +163,7 @@ async function startRecording({streamId, transcription, setTranscription, setCur
   summaryLanguage = undefined
 
   // every 3 mins summarize text: only if recording!
-  setInterval(summarizeTextAtInterval, 360000);
+  setInterval((setSummaryError) => summarizeTextAtInterval({setSummaryError}), 360000);
 
   chrome.action.setIcon({ path: 'icons/recording.png' });
   chrome.action.setBadgeText({ text: 'ON' });
@@ -241,11 +253,11 @@ async function startRecording({streamId, transcription, setTranscription, setCur
   window.location.hash = 'recording';
 }
 
-async function stopRecording({setRecordingOn}) {
+async function stopRecording({setRecordingOn, setSummaryError}) {
   recorder.stop();
 
   // send last chunk of conversation to summarize
-  summarizeTextAtInterval()  
+  summarizeTextAtInterval({setSummaryError})
 
   // close mic when finish transcription
   stopStreamingTranscription()
@@ -273,7 +285,7 @@ async function stopRecording({setRecordingOn}) {
 }
 
 
-async function recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError}) {
+async function recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError, setSummaryError}) {
   setRecordingOn(true)
   recordingInterval = true
 
@@ -289,7 +301,7 @@ async function recording({setRecordingOn, transcription, setTranscription, setCu
     });
 
     error = undefined
-    await startRecording({streamId, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError})
+    await startRecording({streamId, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError, setSummaryError})
 
   }catch(e){
     console.log("error recording")
@@ -347,9 +359,9 @@ function App() {
                   <Button onClick={() => {
                     setTranscription([])
                     setSummary(undefined)
-                    recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError})}
+                    recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError, setSummaryError})}
                   }>Start recording</Button> : 
-                  <Button onClick={() => stopRecording({setRecordingOn})}>Stop recording</Button>
+                  <Button onClick={() => stopRecording({setRecordingOn, setSummaryError})}>Stop recording</Button>
                 }
                 </SpaceBetween>
               </Box>
@@ -423,13 +435,16 @@ function App() {
               id: "summary",
               content: 
               <SpaceBetween size="m" direction='vertical'>
-                <Button disabled={!transcription?.[0] || transcription?.[0] === "" || !activeSummaryButton} onClick={() => retrieveSummary({setSummary, setActiveSummaryButton})}>
+                <Button disabled={!transcription?.[0] || transcription?.[0] === "" || !activeSummaryButton} onClick={() => retrieveSummary({setSummary, setActiveSummaryButton, setSummaryError, summaryError})}>
                   <SpaceBetween size="s" direction='horizontal'>
                     {!summary ? "Get summary" : "Update summary"}
                     <Icon name="gen-ai" />
                   </SpaceBetween>
                 </Button>
-                <TextContent>{summary}</TextContent> 
+                { summaryError ? 
+                  <Box color="text-status-error" textAlign="center" fontSize="heading-m">{summaryError}</Box>
+                  : <TextContent>{summary}</TextContent> 
+                }
               </SpaceBetween>
             },
             {

@@ -12,6 +12,9 @@ const type_of_audio = {
     DIALOGUE: 'dialogue'
 }
 
+let trascriptionLanguage = null
+let translationLanguage = null
+
 let idToken = null
 let audioId = null
 
@@ -25,6 +28,9 @@ export const initIdToken = async () => {
 }
 
 export const sendText = async ({ transcript, lang, translationLang, translation, numSpeakers }) => {
+
+    trascriptionLanguage = lang
+    translationLanguage = translationLang
 
     try {
         const audioType = numSpeakers > 1 ? type_of_audio.DIALOGUE : type_of_audio.MONOLOGUE
@@ -59,6 +65,16 @@ export const sendText = async ({ transcript, lang, translationLang, translation,
         console.log("Transcription to API gateway - FAILURE")
 
         console.log(err)
+
+        console.log("response.data")
+        console.log(err?.response?.data)
+
+        let message = "Error: Cannot summarize the transcript."
+        if (err?.response?.data.includes("Summary is not supported for this pair of languages")) {
+            message = `Error: These languages are not supported for summary: ${trascriptionLanguage ?? ''}, ${translationLanguage ?? ''}`
+        }
+        
+        return {error: true, message}
     }
 
 }
@@ -92,8 +108,10 @@ export const getSummary = async ({ summaryLang, translationLang }) => {
     
     } catch(err){
         console.log("Summary from API gateway - FAILURE")
-
         console.log(err)
+        
+        const message = `Error: Summary could not be retrieved.`
+        return {error: true, message}
     }
 }
 
