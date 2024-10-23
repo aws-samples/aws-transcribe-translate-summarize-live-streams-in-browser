@@ -74,7 +74,7 @@ async function retrieveSummary({setSummary, setActiveSummaryButton}) {
     .catch(error => console.log(error))
 }
 
-async function startRecording({streamId, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options}) {
+async function startRecording({streamId, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError}) {
   console.log("start recording")
   if (recorder?.state === 'recording') {
     throw new Error('Called startRecording while recording is in progress.');
@@ -137,6 +137,7 @@ async function startRecording({streamId, transcription, setTranscription, setCur
   // initialize variables needed for transcription and translation whenever a new conversation starts
   setTranscription([])
   setTranslation([])
+  setTranslationError(null)
   transcription = [] // state variable used to transcribe entire meeting/video - the "setTranscription" method whould be enough
   translation = [] // state variable used to translate entire meeting/video - the "setTranslation" method whould be enough
   let previousSpeaker = undefined
@@ -204,7 +205,21 @@ async function startRecording({streamId, transcription, setTranscription, setCur
             translationToSummarize += `${translatedText}\n`
 
           })
-          .catch(err => console.log(err))
+          .catch(err => {
+            console.log(err)
+            // Check if the error message matches the specific UnsupportedLanguagePairException
+            if (err && err.toString().includes("UnsupportedLanguagePairException: Unsupported language pair")) {
+              // Handle the specific error
+              const errorMessage = "Unsupported language pair detected. Unable to translate."
+              console.error(errorMessage);
+              // You can set a state variable to show an error message to the user
+              setTranslation([""])
+              setTranslationError(`Error: ${errorMessage}`)
+            } else {
+              // Handle other types of errors
+              console.error("An error occurred during translation:", err);
+            }
+          })
         
       }else{
         // while the transcription is not final, set the current transcription in the currentTranscription variable, with "speaker" label
@@ -258,7 +273,7 @@ async function stopRecording({setRecordingOn}) {
 }
 
 
-async function recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options}) {
+async function recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError}) {
   setRecordingOn(true)
   recordingInterval = true
 
@@ -274,7 +289,7 @@ async function recording({setRecordingOn, transcription, setTranscription, setCu
     });
 
     error = undefined
-    await startRecording({streamId, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options})
+    await startRecording({streamId, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError})
 
   }catch(e){
     console.log("error recording")
@@ -300,6 +315,9 @@ function App() {
   const [summary, setSummary] = useState(undefined)
   const [activeSummaryButton, setActiveSummaryButton] = useState(true)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
+
+  const [translationError, setTranslationError] = useState(null);
+  const [summaryError, setSummaryError] = useState(null);
   
   const [options, setOptions] = useState({transcriptionLang: "en-US", translationLang: "it", identifyLanguage: false, mic: false}) // default
 
@@ -329,7 +347,7 @@ function App() {
                   <Button onClick={() => {
                     setTranscription([])
                     setSummary(undefined)
-                    recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options})}
+                    recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError})}
                   }>Start recording</Button> : 
                   <Button onClick={() => stopRecording({setRecordingOn})}>Stop recording</Button>
                 }
@@ -395,7 +413,9 @@ function App() {
               id: "translation",
               content: 
               <>
-                {translation.map(text => <TextContent >{text}</TextContent> )}
+                {translationError ? 
+                  <Box color="text-status-error" textAlign="center" fontSize="heading-m">{translationError}</Box>
+                  : translation.map(text => <TextContent >{text}</TextContent> )}
               </>
             },
             {
