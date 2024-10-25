@@ -31,6 +31,7 @@ let numSpeakers = 0
 let summaryLanguage = ""
 let recordingInterval = false
 let updatedSummary = false
+let stopSummarize = false
   
 async function getCurrentTab() {
   let queryOptions = { active: true, currentWindow: true };
@@ -50,6 +51,7 @@ function summarizeTextAtInterval({setSummaryError}) {
       .then(value => {
         if(value?.error){
           setSummaryError(value.message)
+          stopSummarize = true
         }else{
           summaryLanguage = value
           updatedSummary = true
@@ -65,7 +67,8 @@ async function retrieveSummary({setSummary, setActiveSummaryButton, setSummaryEr
   setActiveSummaryButton(false)
   let retry = 0
   updatedSummary = false
-  while(!updatedSummary && retry < 10){
+  stopSummarize = false
+  while(!updatedSummary && !stopSummarize && retry < 5){
     // Update the summary before retrieving it
     summarizeTextAtInterval({setSummaryError})
     // wait 5 secs and retry
@@ -224,9 +227,8 @@ async function startRecording({streamId, transcription, setTranscription, setCur
               // Handle the specific error
               const errorMessage = "Unsupported language pair detected. Unable to translate."
               console.error(errorMessage);
-              // You can set a state variable to show an error message to the user
               setTranslation([""])
-              setTranslationError(`Error: ${errorMessage}`)
+              setTranslationError(`Unsupported language pair detected. Please change the translation target language.`)
             } else {
               // Handle other types of errors
               console.error("An error occurred during translation:", err);
@@ -359,6 +361,8 @@ function App() {
                   <Button onClick={() => {
                     setTranscription([])
                     setSummary(undefined)
+                    setSummaryError(undefined)
+                    setTranslationError(undefined)
                     recording({setRecordingOn, transcription, setTranscription, setCurrentTranscription, translation, setTranslation, options, setTranslationError, setSummaryError})}
                   }>Start recording</Button> : 
                   <Button onClick={() => stopRecording({setRecordingOn, setSummaryError})}>Stop recording</Button>
@@ -401,7 +405,7 @@ function App() {
                   />
                 </div>
               ) : ( error ?
-                <TextContent>{`${error}.\nUse troubleshooting tips in README.md to solve the issue.`}</TextContent> :
+                <Box color="text-status-error" textAlign="center" fontSize="heading-s">{`${error}.\nUse troubleshooting tips in README.md to solve the issue.`}</Box> :
                 <div style={{height: '30px'}}></div>
               )}
           </Box>
@@ -425,9 +429,10 @@ function App() {
               id: "translation",
               content: 
               <>
-                {translationError ? 
-                  <Box color="text-status-error" textAlign="center" fontSize="heading-m">{translationError}</Box>
-                  : translation.map(text => <TextContent >{text}</TextContent> )}
+                { translationError ? 
+                  <Box color="text-status-error" textAlign="center" fontSize="heading-s">{translationError}</Box>
+                  : translation.map(text => <TextContent >{text}</TextContent> )
+                }
               </>
             },
             {
@@ -435,14 +440,14 @@ function App() {
               id: "summary",
               content: 
               <SpaceBetween size="m" direction='vertical'>
-                <Button disabled={!transcription?.[0] || transcription?.[0] === "" || !activeSummaryButton} onClick={() => retrieveSummary({setSummary, setActiveSummaryButton, setSummaryError, summaryError})}>
+                <Button disabled={!transcription?.[0] || transcription?.[0] === "" || !activeSummaryButton || summaryError} onClick={() => retrieveSummary({setSummary, setActiveSummaryButton, setSummaryError, summaryError})}>
                   <SpaceBetween size="s" direction='horizontal'>
                     {!summary ? "Get summary" : "Update summary"}
                     <Icon name="gen-ai" />
                   </SpaceBetween>
                 </Button>
                 { summaryError ? 
-                  <Box color="text-status-error" textAlign="center" fontSize="heading-m">{summaryError}</Box>
+                  <Box color="text-status-error" textAlign="center" fontSize="heading-s">{summaryError}</Box>
                   : <TextContent>{summary}</TextContent> 
                 }
               </SpaceBetween>

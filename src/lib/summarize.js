@@ -66,12 +66,9 @@ export const sendText = async ({ transcript, lang, translationLang, translation,
 
         console.log(err)
 
-        console.log("response.data")
-        console.log(err?.response?.data)
-
         let message = "Error: Cannot summarize the transcript."
         if (err?.response?.data.includes("Summary is not supported for this pair of languages")) {
-            message = `Error: These languages are not supported for summary: ${trascriptionLanguage ?? ''}, ${translationLanguage ?? ''}`
+            message = `Unsupported language pair detected for summary: ${trascriptionLanguage ?? ''}, ${translationLanguage ?? ''}`
         }
         
         return {error: true, message}
@@ -110,7 +107,7 @@ export const getSummary = async ({ summaryLang, translationLang }) => {
         console.log("Summary from API gateway - FAILURE")
         console.log(err)
         
-        const message = `Error: Summary could not be retrieved.`
+        const message = `Summary not supported for this language pair.`
         return {error: true, message}
     }
 }
